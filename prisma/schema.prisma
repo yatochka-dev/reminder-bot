@@ -14,6 +14,21 @@ type DiscordSnowFlake = String @id
 
 model Guild {
     snowflake DiscordSnowFlake @default(cuid())
+    reminders Reminder[]
+    reminders_count Int @default(0)
+}
+
+model Reminder {
+  id Int @id @default(autoincrement())
+  counter Int @default(1)
+  guild Guild @relation(fields: [guild_id], references: [snowflake])
+  guild_id String
+  reminder_number Int @unique
+  channel_id Int
+  author_id Int
+  created_at DateTime @default(now())
+  expires_at DateTime
+  content String
 }
 
 

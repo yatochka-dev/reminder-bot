@@ -7,7 +7,7 @@ from disnake.ext.commands import InteractionBot
 from pydantic import BaseSettings
 
 from .db import prisma
-from .loggs import logger, disnake_logger
+from .loggs import logger, prisma_logger, disnake_logger
 
 __all__ = ["Bot", "Settings"]
 
@@ -17,7 +17,7 @@ from .types import SupportsIntCast
 class AppSettings(BaseSettings):
     TESTING: bool = True
     TIMEZONE = datetime.timezone(
-        offset=datetime.timedelta(hours=3), name="UTC"
+        offset=datetime.timedelta(hours=2), name="UTC"
     )
 
     github_link = "https://github.com/yatochka-dev/discord-bot-boilerplate"
@@ -49,6 +49,9 @@ def id_(self) -> int | None:
         if isinstance(snowflake_, SupportsIntCast):
             return int(snowflake_)
 
+    if hasattr(self, "id"):
+        return self.id
+
     return None
 
 
@@ -61,8 +64,13 @@ class Bot(InteractionBot):
         self.logger = logger
         self.prisma = prisma
         self.disnake_logger = disnake_logger
+        self.prisma_logger = prisma_logger
 
-        disnake.mixins.Hashable.snowflake = snowflake # noqa
-        pydantic.main.BaseModel.id = id_ # noqa
+        disnake.mixins.Hashable.snowflake = snowflake  # noqa
+        pydantic.main.BaseModel.id_ = id_  # noqa
 
         super().__init__(*args, **kwargs, intents=intents)
+
+    @property
+    def now(self):
+        return datetime.datetime.now(tz=self.APP_SETTINGS.TIMEZONE)

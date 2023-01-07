@@ -3,7 +3,7 @@ import sys
 
 from colorama import Fore, Style, Back
 
-__all__ = ["logger", "disnake_logger"]
+__all__ = ["logger", "prisma_logger", "disnake_logger"]
 
 FORMATS = {
     logging.DEBUG: Fore.CYAN,
@@ -83,3 +83,7 @@ logger.addHandler(handler)
 disnake_logger = logging.getLogger("disnake")
 disnake_logger.setLevel(logging.WARNING)
 disnake_logger.addHandler(handler)
+
+prisma_logger = logging.getLogger("prisma")
+prisma_logger.setLevel(logging.WARNING)
+prisma_logger.addHandler(handler)

@@ -44,6 +44,8 @@ class Embed:
         self.thumbnail = thumbnail
         self.fields = fields
         self.embed = disnake.Embed(*args, **kwargs)
+        self.args = args
+        self.kwargs = kwargs
         self._set_footer(user)
 
     def _set_footer(self, user: DiscordUtilizer) -> None:
@@ -67,6 +69,22 @@ class Embed:
                 c.add_field(**field.to_dict())
 
         return c
+
+    def set_fields(self, fields: list[EmbedField] | tuple[EmbedField]) -> None:
+        self.embed.clear_fields()
+        for field in fields:
+            self.embed.add_field(**field.to_dict())
+
+    def copy(self):
+        return Embed(
+            user=self.user,
+            thumbnail=self.thumbnail,
+            fields=self.fields,
+            *self.args,
+            **self.kwargs
+        )
+
+
 
     def as_color(
             self, color: disnake.Color | tuple[int, int, int]
