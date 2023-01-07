@@ -1,0 +1,19 @@
+generator client {
+    provider = "prisma-client-py"
+    interface = "asyncio"
+    recursive_type_depth = -1
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+
+type DiscordSnowFlake = String @id 
+
+model Guild {
+    snowflake DiscordSnowFlake @default(cuid())
+}
+
+
